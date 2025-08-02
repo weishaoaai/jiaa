@@ -1,7 +1,12 @@
 name: Build Jar
 
 on:
-  workflow_dispatch:
+  push:
+    paths:
+      - 'Main.java'
+  pull_request:
+    paths:
+      - 'Main.java'
 
 jobs:
   build:
