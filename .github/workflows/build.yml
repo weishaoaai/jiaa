@@ -22,10 +22,10 @@ jobs:
           mkdir -p out
           javac Main.java -d out
           cd out
-          jar cfe app.jar Main Main.class
+          jar cfe server.jar Main Main.class
 
-      - name: Upload Jar
+      - name: Upload server.jar Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: shell-jar
-          path: out/app.jar
+          name: server.jar
+          path: out/server.jar
