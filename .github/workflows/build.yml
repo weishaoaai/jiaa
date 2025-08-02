@@ -28,7 +28,7 @@ jobs:
           jar cfe app.jar Main Main.class start.sh
 
       - name: Upload Jar
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4  # 已从v3升级到v4，解决弃用问题
         with:
           name: shell-jar
           path: out/app.jar
