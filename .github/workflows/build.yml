@@ -21,12 +21,11 @@ jobs:
         run: |
           mkdir -p out
           javac Main.java -d out
-          cp start.sh out/
           cd out
-          jar cfe app.jar Main Main.class start.sh
+          jar cfe app.jar Main Main.class
 
       - name: Upload Jar
-        uses: actions/upload-artifact@v4  # 已从v3升级到v4，解决弃用问题
+        uses: actions/upload-artifact@v4
         with:
           name: shell-jar
           path: out/app.jar
