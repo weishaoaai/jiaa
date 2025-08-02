@@ -7,9 +7,10 @@ on:
   pull_request:
     paths:
       - 'Main.java'
+  workflow_dispatch:
 
 jobs:
-  build:
+  build-and-clean:
     runs-on: ubuntu-latest
 
     steps:
@@ -34,3 +35,28 @@ jobs:
         with:
           name: server.jar
           path: out/server.jar
+
+      - name: Install GitHub CLI
+        run: |
+          sudo apt install gh -y
+          echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
+
+      - name: Delete previous artifacts (keep current)
+        env:
+          GH_REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          echo "Current run ID: ${RUN_ID}"
+          artifacts=$(gh api repos/${GH_REPO}/actions/artifacts --paginate -q '.artifacts[] | "\(.id) \(.workflow_run.id)"')
+
+          while IFS= read -r line; do
+            artifact_id=$(echo $line | cut -d ' ' -f1)
+            artifact_run_id=$(echo $line | cut -d ' ' -f2)
+
+            if [ "$artifact_run_id" != "$RUN_ID" ]; then
+              echo "Deleting artifact ID $artifact_id (from run $artifact_run_id)"
+              gh api -X DELETE repos/${GH_REPO}/actions/artifacts/$artifact_id
+            else
+              echo "✅ Keeping current artifact ID $artifact_id"
+            fi
+          done <<< "$artifacts"
