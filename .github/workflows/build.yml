@@ -1,8 +1,6 @@
 name: Build Jar
 
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 jobs:
