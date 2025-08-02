@@ -1,0 +1,34 @@
+name: Build Jar
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Compile and Package JAR
+        run: |
+          mkdir -p out
+          javac Main.java -d out
+          cp start.sh out/
+          cd out
+          jar cfe app.jar Main Main.class start.sh
+
+      - name: Upload Jar
+        uses: actions/upload-artifact@v3
+        with:
+          name: shell-jar
+          path: out/app.jar
